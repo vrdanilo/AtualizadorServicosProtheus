@@ -1,0 +1,2 @@
+D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\bin\Release\net8.0\win-x64\publish\AtualizadorServicosProtheus.pdb
+D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\bin\Release\net8.0\win-x64\publish\AtualizadorServicosProtheus.exe

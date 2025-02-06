@@ -1,0 +1,2 @@
+C:\Users\danilo.david\source\repos\AtualizadorServicosProtheus\bin\Release\net8.0\win-x64\publish\AtualizadorServicosProtheus.pdb
+C:\Users\danilo.david\source\repos\AtualizadorServicosProtheus\bin\Release\net8.0\win-x64\publish\AtualizadorServicosProtheus.exe
