@@ -48,3 +48,4 @@ D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Debug\net8.0\refint\
 D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Debug\net8.0\AtualizadorServicosProtheus.pdb
 D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Debug\net8.0\AtualizadorServicosProtheus.genruntimeconfig.cache
 D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Debug\net8.0\ref\AtualizadorServicosProtheus.dll
+D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Debug\net8.0\AtualizadorServicosProtheus.sourcelink.json

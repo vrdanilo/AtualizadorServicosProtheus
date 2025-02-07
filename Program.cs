@@ -234,6 +234,17 @@ class Menu
                 CallStartMenu();
                 break;
 
+            case "8":
+                Console.WriteLine("Iniciando o split do arquivo: ");
+                Console.WriteLine("");
+                windowsServicesManager.SplitLineOfFile();
+                Console.WriteLine("Aperte enter para voltar o menu anterior: ");
+                Console.WriteLine("");
+                Console.ReadLine();
+                Console.Clear();
+                CallStartMenu();
+                break;              
+
 
             default:
                 Console.WriteLine("A opcao informada nao esta correta, aperte enter para voltar ao menu e tentar novamente!");
@@ -344,9 +355,34 @@ class WindowsServicesManager
         folder = new Folder();
     }
 
+
+    public void SplitLineOfFile()
+    {
+        using (StreamWriter writetext = new StreamWriter("C:\\Users\\vrdan\\Downloads\\Scripts PETZ\\Scripts PETZ\\query2_tratada.sql"))
+        {
+        //StreamReader readtext = new StreamReader("C:\\Users\\vrdan\\Downloads\\Scripts PETZ\\Scripts PETZ\\query2.sql");
+        
+            string line = File.ReadAllText("C:\\Users\\vrdan\\Downloads\\Scripts PETZ\\Scripts PETZ\\query2.sql");
+            // readtext.ReadLine();
+
+            string[] readtextArray = line.Split(',');
+
+            foreach (string readtext in readtextArray)
+            {
+
+                //  Console.WriteLine(readtextList.Count);
+
+                writetext.WriteLine("DELETE FROM SX5040 WHERE R_E_C_N_O_ = " + readtext.Trim() + ";" );
+            }
+            
+        }
+    }
+
     public void UpdateIniWindowsServices()
     {
         ConfigIniFile configIniFile;
+        ConfigIniFile configIniFileServices;
+        string iniFile = "AtualizadorServicosProtheus.ini";
 
         string[] services;
         folder.CreateIfNotExists(logFolder);
@@ -367,6 +403,7 @@ class WindowsServicesManager
                 writetext.WriteLine(services[2] + "\\" + services[4]);
             }
         }
+        Console.WriteLine("");
         Console.WriteLine("Você também poderá consultar a lista através do arquivo: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + resultFile);
 
         Console.WriteLine("");
@@ -376,12 +413,26 @@ class WindowsServicesManager
         option = Console.ReadLine();
         if (option == '1'.ToString())
         {
+            configIniFile = new ConfigIniFile(iniFile);
+
+            string webAppSection = "WebApp";
+            string webAgentSection = "WebAgent";
+            string webAppKeyPort = "Port";            
+            string webAppKeyEnable = "Enable";
+            string webAppValueEnable = "1";
+            string webAppKeyAgentJsonUpdate = "agentJsonUpdate";
+
+            string webAppStartValuePort = configIniFile.GetVal("webAppStartValuePort", "webapp");
+            string webAppValueAgentJsonUpdate = configIniFile.GetVal("webAppValueAgentJsonUpdate", "webapp"); 
+            
             string originIniFile;
             string backupIniFile;
+            string webAppValuePort = webAppStartValuePort;
             using (StreamWriter writetext = new StreamWriter(logFolder + "\\INIsAlterados" + DateTime.Now.ToString("yyyyMMdd_HHmm") + ".log"))
             {
                 for (int i = 0; i < listOfServices.Count; i++)
                 {
+                    
                     services = listOfServices[i];
                     originIniFile = services[2] + "\\" + services[4];
                     backupIniFile = originIniFile + "_" + DateTime.Now.ToString("yyyyMMdd_HHmm");
@@ -391,13 +442,24 @@ class WindowsServicesManager
 
                     Console.WriteLine("Realizando a atualizacao do arquivo: " + originIniFile);
                     writetext.WriteLine("Realizando a atualizacao do arquivo: " + originIniFile);
-                    configIniFile = new ConfigIniFile(originIniFile);
-                    string val = configIniFile.GetVal("Port", "WebApp");
-                    configIniFile.DeleteSection("WebApp");
-                    configIniFile.DeleteSection("WebAgent");
-                    configIniFile.CreateKey("Port", "989898", "WebApp");
-                    configIniFile.CreateKey("Enable", "1", "WebApp");
-                    configIniFile.CreateKey("agentJsonUpdate", "D:\\Totvs\\Protheus\\webagent\\webagent.json", "WebApp");
+                    configIniFileServices = new ConfigIniFile(originIniFile);
+                    string val = configIniFileServices.GetVal(webAppKeyPort, webAppSection);
+                                         
+                    configIniFileServices.DeleteSection(webAppSection);
+                    configIniFileServices.DeleteSection(webAgentSection);
+                    if (val != "")
+                    {
+                        configIniFileServices.CreateKey(webAppKeyPort, val, webAppSection);
+                    }
+                    else
+                    {
+                        configIniFileServices.CreateKey(webAppKeyPort, webAppValuePort, webAppSection);
+                        int result = Int32.Parse(webAppValuePort);
+                        result += 1;
+                        webAppValuePort = result.ToString();
+                    }                    
+                    configIniFileServices.CreateKey(webAppKeyEnable, webAppValueEnable, webAppSection);
+                    configIniFileServices.CreateKey(webAppKeyAgentJsonUpdate, webAppValueAgentJsonUpdate, webAppSection);
 
                     Console.WriteLine("");
                     writetext.WriteLine("");
