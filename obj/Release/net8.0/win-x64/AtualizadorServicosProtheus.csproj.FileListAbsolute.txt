@@ -406,3 +406,4 @@ D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Release\net8.0\win-x
 D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Release\net8.0\win-x64\AtualizadorServicosProtheus.pdb
 D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Release\net8.0\win-x64\AtualizadorServicosProtheus.genruntimeconfig.cache
 D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Release\net8.0\win-x64\ref\AtualizadorServicosProtheus.dll
+D:\Laboratorios\C#\Projetos\AtualizadorServicosProtheus\obj\Release\net8.0\win-x64\AtualizadorServicosProtheus.sourcelink.json

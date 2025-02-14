@@ -485,7 +485,7 @@ class WindowsServicesManager
     {
         listOfServices.Clear();
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Service");
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Service WHERE StartMode <> 'Disabled'");
         ManagementObjectCollection collection = searcher.Get();
 
         int countExclude=0;

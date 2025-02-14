@@ -1,14 +1,18 @@
 {
   "version": 2,
-  "dgSpecHash": "a07wnjiweG4=",
+  "dgSpecHash": "em0smyOQzt8=",
   "success": true,
   "projectFilePath": "D:\\Laboratorios\\C#\\Projetos\\AtualizadorServicosProtheus\\AtualizadorServicosProtheus.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vrdan\\.nuget\\packages\\inireader\\1.0.0.42658\\inireader.1.0.0.42658.nupkg.sha512",
+    "C:\\Users\\vrdan\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.12\\microsoft.net.illink.tasks.8.0.12.nupkg.sha512",
     "C:\\Users\\vrdan\\.nuget\\packages\\system.codedom\\9.0.1\\system.codedom.9.0.1.nupkg.sha512",
     "C:\\Users\\vrdan\\.nuget\\packages\\system.diagnostics.eventlog\\9.0.1\\system.diagnostics.eventlog.9.0.1.nupkg.sha512",
     "C:\\Users\\vrdan\\.nuget\\packages\\system.management\\9.0.1\\system.management.9.0.1.nupkg.sha512",
-    "C:\\Users\\vrdan\\.nuget\\packages\\system.serviceprocess.servicecontroller\\9.0.1\\system.serviceprocess.servicecontroller.9.0.1.nupkg.sha512"
+    "C:\\Users\\vrdan\\.nuget\\packages\\system.serviceprocess.servicecontroller\\9.0.1\\system.serviceprocess.servicecontroller.9.0.1.nupkg.sha512",
+    "C:\\Users\\vrdan\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\8.0.12\\microsoft.netcore.app.runtime.win-x64.8.0.12.nupkg.sha512",
+    "C:\\Users\\vrdan\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\8.0.12\\microsoft.windowsdesktop.app.runtime.win-x64.8.0.12.nupkg.sha512",
+    "C:\\Users\\vrdan\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\8.0.12\\microsoft.aspnetcore.app.runtime.win-x64.8.0.12.nupkg.sha512"
   ],
   "logs": [
     {
