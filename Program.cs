@@ -490,44 +490,60 @@ class WindowsServicesManager
 
         int countExclude=0;
 
-        // Para cada servico da lista de servicos do windows
-        foreach (ManagementObject service in collection)
+        using (StreamWriter writetext = new StreamWriter(logFolder + "\\GeracaoListaServicos" + DateTime.Now.ToString("yyyyMMdd_HHmm") + ".log"))
         {
-            // Para cada valor indicado no parametro searchPattern para encontrar os servicos
-            foreach (string include in searchPattern)
+            // Para cada servico da lista de servicos do windows
+            foreach (ManagementObject service in collection)
             {
-                if (include != "")
-                { 
-                    // Verifica se o nome do servico do windows contem algum dos valores indicados no parametro serachPattern
-                    if (service["DisplayName"].ToString().ToUpper().Contains(include.ToUpper()))
+                // Para cada valor indicado no parametro searchPattern para encontrar os servicos
+                foreach (string include in searchPattern)
+                {
+                    if (include != "")
                     {
-                        countExclude = 0;
-                        // Para cada item da lista de valores a que nao devem ser encontrados nos servicos
-                        foreach (string exclude in excludePattern)
+                        // Verifica se o nome do servico do windows contem algum dos valores indicados no parametro serachPattern
+                        if (service["DisplayName"].ToString().ToUpper().Contains(include.ToUpper()))
                         {
-                            if (exclude != "")
+                            countExclude = 0;
+                            // Para cada item da lista de valores a que nao devem ser encontrados nos servicos
+                            foreach (string exclude in excludePattern)
                             {
-                                // Se o algum dos valores que nao devem constar na lista de servicos for identificado o contador sera colocado em 1
-                                
-                                if (service["DisplayName"].ToString().ToUpper().Contains(exclude.ToUpper()))
+                                if (exclude != "")
                                 {
-                                    countExclude = 1;
+                                    // Se o algum dos valores que nao devem constar na lista de servicos for identificado o contador sera colocado em 1
+
+                                    if (service["DisplayName"].ToString().ToUpper().Contains(exclude.ToUpper()))
+                                    {
+                                        countExclude = 1;
+                                    }
                                 }
                             }
-                        }
 
-                        // Se o contador ainda for 0 indicando que nao deve ser excluido o servico e adicionado a lista final
-                        if (countExclude == 0)
-                        {
-                            string serviceDirectory = Path.GetDirectoryName(service["PathName"].ToString());
-                            string serviceExec = Path.GetFileName(service["PathName"].ToString());
-                            string serviceIni = GetIniServiceName(serviceExec);
-                            listOfServices.Add(new string[] { service["DisplayName"].ToString(), service["Name"].ToString(), serviceDirectory, serviceExec, serviceIni});
+                            // Se o contador ainda for 0 indicando que nao deve ser excluido o servico e adicionado a lista final
+                            if (countExclude == 0)
+                            {
+                                string serviceDirectory = Path.GetDirectoryName(service["PathName"].ToString());
+                                string serviceExec = Path.GetFileName(service["PathName"].ToString());
+                                serviceExec = GetExecServiceName(serviceExec); // limpa o nome nos casos onde e broker e tem mais coisa escrita depois do appserver.exe
+                                string serviceIni = GetIniServiceName(serviceExec);
+
+                                if (File.Exists(serviceDirectory + "\\" + serviceIni))
+                                {
+
+                                    listOfServices.Add(new string[] { service["DisplayName"].ToString(), service["Name"].ToString(), serviceDirectory, serviceExec, serviceIni });
+                                }
+                                else
+                                {   // se um servico nao tiver um arquivo ini ele sera ignorado e sera informado isso no arquivo de log
+                                    Console.WriteLine("");
+                                    Console.WriteLine("O servico " + service["DisplayName"].ToString() + " foi removido da lista devido ao fato de nao ter sido encontrado o seu arquivo .ini.");
+                                    writetext.WriteLine("");
+                                    writetext.WriteLine("O servico " + service["DisplayName"].ToString() + " foi removido da lista devido ao fato de nao ter sido encontrado o seu arquivo .ini.");
+                                }
+                            }
                         }
                     }
                 }
             }
-        }               
+        }              
     }
 
     public void WriteListOfServices(List<string> searchPattern, List<string> excludePattern)
@@ -669,6 +685,12 @@ class WindowsServicesManager
     public string GetIniServiceName(string execServiceName)
     {
         string iniServiceName = Path.GetFileNameWithoutExtension(execServiceName) + ".ini";        
+        return iniServiceName;
+    }
+
+    public string GetExecServiceName(string execServiceName)
+    {
+        string iniServiceName = Path.GetFileNameWithoutExtension(execServiceName) + ".exe";
         return iniServiceName;
     }
 
