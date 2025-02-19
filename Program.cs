@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.ServiceProcess;
 using Microsoft.VisualBasic.FileIO;
+using System.Runtime.Intrinsics.X86;
 
 
 class IniFile   // revision 11
@@ -300,15 +301,18 @@ class ConfigIniFile
         updateDir = GetVal("updateDir", "ProtheusServices");
 
         searchPatternList = ConvertStringToList(searchPattern);
-        excludePatternList = ConvertStringToList(excludePattern);        
+        excludePatternList = ConvertStringToList(excludePattern);       
+
     }
 
     public void ShowIniFile()
     {
+        Console.WriteLine("ProtheusServices");
         Console.WriteLine("Padrao de busca: " + searchPattern);
         Console.WriteLine("Padrao de exclusao: " + excludePattern);
         Console.WriteLine("Diretorio de backup: " + backupDir);
         Console.WriteLine("Diretorio de origem do backup: " + updateDir);
+
     }
 
     public List<string> GetSearchPatternList()
@@ -422,9 +426,42 @@ class WindowsServicesManager
             string webAppValueEnable = "1";
             string webAppKeyAgentJsonUpdate = "agentJsonUpdate";
 
+            string sslConfigureSection = "SSLConfigure";
+
             string webAppStartValuePort = configIniFile.GetVal("webAppStartValuePort", "webapp");
-            string webAppValueAgentJsonUpdate = configIniFile.GetVal("webAppValueAgentJsonUpdate", "webapp"); 
-            
+            string webAppValueAgentJsonUpdate = configIniFile.GetVal("webAppValueAgentJsonUpdate", "webapp");
+
+            string usaHTTPS = configIniFile.GetVal("UsaHTTPS", "SSLConfigure");
+
+            string sslConfigureSSL2Key = "SSL2";
+            string sslConfigureSSL2Value = configIniFile.GetVal("SSL2", "SSLConfigure");
+            string sslConfigureSSL3Key = "SSL3";
+            string sslConfigureSSL3Value = configIniFile.GetVal("SSL3", "SSLConfigure");
+            string sslConfigureTLS1_0Key = "TLS1_0";
+            string sslConfigureTLS1_0Value = configIniFile.GetVal("TLS1_0", "SSLConfigure");
+            string sslConfigureTLS1_1Key = "TLS1_1";
+            string sslConfigureTLS1_1Value = configIniFile.GetVal("TLS1_1", "SSLConfigure");
+            string sslConfigureTLS1_2Key = "TLS1_2";
+            string sslConfigureTLS1_2Value = configIniFile.GetVal("TLS1_2", "SSLConfigure");
+            string sslConfigureVerboseKey = "Verbose";
+            string sslConfigureVerboseValue = configIniFile.GetVal("Verbose", "SSLConfigure");
+            string sslConfigureBugsKey = "Bugs";
+            string sslConfigureBugsValue = configIniFile.GetVal("Bugs", "SSLConfigure");
+            string sslConfigureStateKey = "State";
+            string sslConfigureStateValue = configIniFile.GetVal("State", "SSLConfigure");
+            string sslConfigureCacheSizeKey = "CacheSize";
+            string sslConfigureCacheSizeValue = configIniFile.GetVal("CacheSize", "SSLConfigure");
+            string sslConfigureHSMKey = "HSM";
+            string sslConfigureHSMValue = configIniFile.GetVal("HSM", "SSLConfigure");
+            string sslConfigureCertificateServerKey = "CertificateServer";
+            string sslConfigureCertificateServerValue = configIniFile.GetVal("CertificateServer", "SSLConfigure");
+            string sslConfigureKeyServerKey = "KeyServer";
+            string sslConfigureKeyServerValue = configIniFile.GetVal("KeyServer", "SSLConfigure");
+            string sslConfigurePassPhraseKey = "PassPhrase";
+            string sslConfigurePassPhraseValue = configIniFile.GetVal("PassPhrase", "SSLConfigure");
+
+            string portaMultiprotocoloValue = configIniFile.GetVal("portaMultiprotocolo", "Drivers");
+
             string originIniFile;
             string backupIniFile;
             string webAppValuePort = webAppStartValuePort;
@@ -460,6 +497,42 @@ class WindowsServicesManager
                     }                    
                     configIniFileServices.CreateKey(webAppKeyEnable, webAppValueEnable, webAppSection);
                     configIniFileServices.CreateKey(webAppKeyAgentJsonUpdate, webAppValueAgentJsonUpdate, webAppSection);
+
+
+                    if (usaHTTPS == '1'.ToString())
+                    {
+                        configIniFileServices.DeleteSection(sslConfigureSection);
+
+                        configIniFileServices.CreateKey(sslConfigureSSL2Key, sslConfigureSSL2Value, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureSSL3Key, sslConfigureSSL3Value, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureTLS1_0Key, sslConfigureTLS1_0Value, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureTLS1_1Key, sslConfigureTLS1_1Value, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureTLS1_2Key, sslConfigureTLS1_2Value, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureVerboseKey, sslConfigureVerboseValue, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureBugsKey, sslConfigureBugsValue, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureStateKey, sslConfigureStateValue, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureCacheSizeKey, sslConfigureCacheSizeValue, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureHSMKey, sslConfigureHSMValue, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureCertificateServerKey, sslConfigureCertificateServerValue, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigureKeyServerKey, sslConfigureKeyServerValue, sslConfigureSection);
+                        configIniFileServices.CreateKey(sslConfigurePassPhraseKey, sslConfigurePassPhraseValue, sslConfigureSection);
+
+
+                        if (portaMultiprotocoloValue == "1".ToString())
+                        {
+                            configIniFileServices.CreateKey("MultiProtocolPort", "1", "Drivers");
+                            configIniFileServices.CreateKey("MultiProtocolPortSecure", "1", "Drivers");
+                        }                        
+                    }
+                    else
+                    {
+                        if (portaMultiprotocoloValue == "1".ToString())
+                        {
+                            configIniFileServices.CreateKey("MultiProtocolPort", "1", "Drivers");
+                            configIniFileServices.CreateKey("MultiProtocolPortSecure", "0", "Drivers");
+                        }
+                    }
+
 
                     Console.WriteLine("");
                     writetext.WriteLine("");
