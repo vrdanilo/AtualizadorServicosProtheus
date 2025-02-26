@@ -362,23 +362,30 @@ class WindowsServicesManager
 
     public void SplitLineOfFile()
     {
-        using (StreamWriter writetext = new StreamWriter("C:\\Users\\vrdan\\Downloads\\Scripts PETZ\\Scripts PETZ\\query2_tratada.sql"))
-        {
-        //StreamReader readtext = new StreamReader("C:\\Users\\vrdan\\Downloads\\Scripts PETZ\\Scripts PETZ\\query2.sql");
+        Console.Clear();
+        Console.WriteLine("Você esta acessando um menu não documentado!!!");
+        Console.WriteLine("Informe o arquivo que contém os ids que devem ser divididos. IMPORTANTE: deixe no arquivo apenas os IDs divididos por , Remova o comando de delete e os ()");
+        string fileToSplit = Console.ReadLine();
         
-            string line = File.ReadAllText("C:\\Users\\vrdan\\Downloads\\Scripts PETZ\\Scripts PETZ\\query2.sql");
-            // readtext.ReadLine();
+        Console.WriteLine("Informe o arquivo onde sera gerado o resultado.");
+        string splitedFile = Console.ReadLine();
+
+        Console.WriteLine("Informe o comando de delete para que sejam criados cada linha. Exemplo: DELETE FROM SX5040 WHERE R_E_C_N_O_ =  é importante que o comando termine no = ");
+        string queryToDelete = Console.ReadLine();
+
+        Console.WriteLine("");
+
+
+        using (StreamWriter writetext = new StreamWriter(splitedFile))
+        {        
+            string line = File.ReadAllText(fileToSplit);
 
             string[] readtextArray = line.Split(',');
 
             foreach (string readtext in readtextArray)
             {
-
-                //  Console.WriteLine(readtextList.Count);
-
-                writetext.WriteLine("DELETE FROM SX5040 WHERE R_E_C_N_O_ = " + readtext.Trim() + ";" );
-            }
-            
+                writetext.WriteLine(queryToDelete + readtext.Trim() + ";" );
+            }            
         }
     }
 
@@ -461,7 +468,7 @@ class WindowsServicesManager
             string sslConfigurePassPhraseValue = configIniFile.GetVal("PassPhrase", "SSLConfigure");
 
             string portaMultiprotocoloValue = configIniFile.GetVal("portaMultiprotocolo", "Drivers");
-
+            
             string originIniFile;
             string backupIniFile;
             string webAppValuePort = webAppStartValuePort;
@@ -515,8 +522,11 @@ class WindowsServicesManager
                         configIniFileServices.CreateKey(sslConfigureHSMKey, sslConfigureHSMValue, sslConfigureSection);
                         configIniFileServices.CreateKey(sslConfigureCertificateServerKey, sslConfigureCertificateServerValue, sslConfigureSection);
                         configIniFileServices.CreateKey(sslConfigureKeyServerKey, sslConfigureKeyServerValue, sslConfigureSection);
-                        configIniFileServices.CreateKey(sslConfigurePassPhraseKey, sslConfigurePassPhraseValue, sslConfigureSection);
 
+                        if (sslConfigurePassPhraseValue != "")
+                        {
+                            configIniFileServices.CreateKey(sslConfigurePassPhraseKey, sslConfigurePassPhraseValue, sslConfigureSection);
+                        }
 
                         if (portaMultiprotocoloValue == "1".ToString())
                         {
@@ -533,16 +543,8 @@ class WindowsServicesManager
                         }
                     }
 
-
                     Console.WriteLine("");
-                    writetext.WriteLine("");
-                    // limpar a sec webapp
-                    // limpar a sec webagent
-                    // incluir a sec webapp com o parametro
-                    // [WebApp]
-                    // Port = 4322
-                    //Enable = 1
-                    //agentJsonUpdate = D:\Totvs\Protheus\webagent\webagent.json                    
+                    writetext.WriteLine("");                  
                 }
             }
         }   
@@ -684,57 +686,68 @@ class WindowsServicesManager
         }
         else
         {
-            string[] services;
-            string option = '0'.ToString();
-
-            Console.WriteLine("");
-            Console.WriteLine("Segue abaixo a lista dos diretorios que serao atualizados");
-            Console.WriteLine("");
-
-            folder.CreateIfNotExists(resultFolder);
-            string resultFile = resultFolder + "\\listOfDirBeUpdated.result";
-            using (StreamWriter writetext = new StreamWriter(resultFile))
+            if (!File.Exists(dirOrigin + "\\appserver.exe"))
             {
-                for (int i = 0; i < listOfServices.Count; i++)
-                {
-                    services = listOfServices[i];
-                    Console.WriteLine(services[2]);
-                    writetext.WriteLine(services[2]);
-                }
+                Console.WriteLine("");
+                Console.WriteLine("O diretorio de atualizacao nao contem os arquivos para que o processo de atualizacao seja feito. Por favor, insira os componentes a serem atualizados no diretorio de atualizacao!!!");
+                Console.WriteLine("Diretorio de atualizacao: " + dirOrigin);
+                Console.WriteLine("");
             }
-            Console.WriteLine("Você também poderá consultar a lista através do arquivo: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + resultFile);
-
-            Console.WriteLine("");
-            Console.WriteLine("Dado a lista dos diretorios a serem atualizados acima, confirme o inicio da atualizacao: 1-Iniciar 2-Abortar");
-            Console.WriteLine("");
-
-            option = Console.ReadLine();
-            if (option == '1'.ToString())
+            else
             {
-                folder.CreateIfNotExists(logFolder);
-                using (StreamWriter writetext = new StreamWriter(logFolder + "\\AtualizacaoServicos_" + DateTime.Now.ToString("yyyyMMdd_HHmm") + ".log"))
+
+                string[] services;
+                string option = '0'.ToString();
+
+                Console.WriteLine("");
+                Console.WriteLine("Segue abaixo a lista dos diretorios que serao atualizados");
+                Console.WriteLine("");
+
+                folder.CreateIfNotExists(resultFolder);
+                string resultFile = resultFolder + "\\listOfDirBeUpdated.result";
+                using (StreamWriter writetext = new StreamWriter(resultFile))
                 {
                     for (int i = 0; i < listOfServices.Count; i++)
                     {
                         services = listOfServices[i];
-                        Console.WriteLine("Realizando a limpeza do diretorio: " + services[2]);
-                        CleanDirectory(services[2], GetIniServiceName(services[3]));
-                        writetext.WriteLine("Realizando a limpeza do diretorio: " + services[2]);
-
-                        Console.WriteLine("Realizando a copia dos novos arquivos do diretorio " + dirOrigin + " para o diretorio " + services[2]);
-                        UpdateServiceDirectory(dirOrigin, services[2], services[3]);
-                        writetext.WriteLine("Realizando a copia dos novos arquivos do diretorio " + dirOrigin + " para o diretorio " + services[2]);
-
-                        Console.WriteLine("");
-                        writetext.WriteLine("");
+                        Console.WriteLine(services[2]);
+                        writetext.WriteLine(services[2]);
                     }
                 }
-            }
-            else
-            {
+                Console.WriteLine("Você também poderá consultar a lista através do arquivo: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + resultFile);
+
                 Console.WriteLine("");
-                Console.WriteLine("Atualizacao cancelada.");
+                Console.WriteLine("Dado a lista dos diretorios a serem atualizados acima, confirme o inicio da atualizacao: 1-Iniciar 2-Abortar");
                 Console.WriteLine("");
+
+                option = Console.ReadLine();
+                if (option == '1'.ToString())
+                {
+                    folder.CreateIfNotExists(logFolder);
+                    using (StreamWriter writetext = new StreamWriter(logFolder + "\\AtualizacaoServicos_" + DateTime.Now.ToString("yyyyMMdd_HHmm") + ".log"))
+                    {
+                        for (int i = 0; i < listOfServices.Count; i++)
+                        {
+                            services = listOfServices[i];
+                            Console.WriteLine("Realizando a limpeza do diretorio: " + services[2]);
+                            CleanDirectory(services[2], GetIniServiceName(services[3]));
+                            writetext.WriteLine("Realizando a limpeza do diretorio: " + services[2]);
+
+                            Console.WriteLine("Realizando a copia dos novos arquivos do diretorio " + dirOrigin + " para o diretorio " + services[2]);
+                            UpdateServiceDirectory(dirOrigin, services[2], services[3]);
+                            writetext.WriteLine("Realizando a copia dos novos arquivos do diretorio " + dirOrigin + " para o diretorio " + services[2]);
+
+                            Console.WriteLine("");
+                            writetext.WriteLine("");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("");
+                    Console.WriteLine("Atualizacao cancelada.");
+                    Console.WriteLine("");
+                }
             }
         }
     }

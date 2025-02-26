@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AtualizadorServicosProtheus")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5cf2fd8cfb0821813a8ad279f3d32e83d0e2c966")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f27ce01c46dd26053525e1b36101fd2a452dca82")]
 [assembly: System.Reflection.AssemblyProductAttribute("AtualizadorServicosProtheus")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AtualizadorServicosProtheus")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
